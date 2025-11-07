@@ -3,8 +3,8 @@ services:
     name: autodialer-api
     env: ruby
     plan: free
-    buildCommand: "bundle install; bundle exec rake db:migrate"
-    startCommand: "bundle exec rails s -b 0.0.0.0"
+    buildCommand: "bundle install && bundle exec rake db:migrate"
+    startCommand: "bundle exec rails s -b 0.0.0.0 -p 3000"
     envVars:
       - key: DATABASE_URL
         fromDatabase:
@@ -13,6 +13,7 @@ services:
       - key: REDIS_URL
         fromService:
           name: autodialer-redis
+          type: redis
           property: connectionString
       - key: TWILIO_ACCOUNT_SID
         sync: false
@@ -22,15 +23,19 @@ services:
         sync: false
       - key: GEMINI_API_KEY
         sync: false
+      - key: OPENAI_API_KEY
+        sync: false
       - key: RAILS_ENV
         value: production
+      - key: RAILS_LOG_TO_STDOUT
+        value: "true"
 
   - type: worker
     name: autodialer-worker
     env: ruby
     plan: free
     buildCommand: "bundle install"
-    startCommand: "bundle exec sidekiq"
+    startCommand: "bundle exec sidekiq -c 5 -v"
     envVars:
       - key: DATABASE_URL
         fromDatabase:
@@ -39,15 +44,17 @@ services:
       - key: REDIS_URL
         fromService:
           name: autodialer-redis
+          type: redis
           property: connectionString
+      - key: RAILS_ENV
+        value: production
 
   - type: pserv
     name: autodialer-db
     plan: free
     ipAllowList: []
-    postgresSQLVersion: "15"
 
   - type: redis
     name: autodialer-redis
-    plan: starter
+    plan: free
     ipAllowList: []
