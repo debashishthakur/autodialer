@@ -49,12 +49,10 @@ services:
       - key: RAILS_ENV
         value: production
 
-  - type: pserv
+  - type: postgres
     name: autodialer-db
     plan: free
-    ipAllowList: []
 
   - type: redis
     name: autodialer-redis
     plan: free
-    ipAllowList: []
