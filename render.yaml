@@ -21,8 +21,12 @@ services:
         sync: false
       - key: GEMINI_API_KEY
         sync: false
+      - key: OPENAI_API_KEY
+        sync: false
       - key: RAILS_ENV
         value: production
+      - key: RAILS_LOG_TO_STDOUT
+        value: "true"
 
   - type: worker
     name: autodialer-worker
@@ -38,7 +42,10 @@ services:
           name: autodialer-redis
           type: redis
           property: connectionString
+      - key: RAILS_ENV
+        value: production
 
   - type: redis
     name: autodialer-redis
     plan: free
+    ipAllowList: []
