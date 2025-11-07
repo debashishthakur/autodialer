@@ -44,10 +44,7 @@ services:
   - type: pserv
     name: autodialer-db
     plan: free
-    ipAllowList: []
-    postgresSQLVersion: "15"
 
   - type: redis
     name: autodialer-redis
     plan: starter
-    ipAllowList: []
